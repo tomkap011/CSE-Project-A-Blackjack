@@ -1,4 +1,6 @@
 import random
+import time
+start_time = time.time()
 
 emblems = ['▒', '♣', '♦', '♥', '♠']
 types = ['▒', 'A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
@@ -6,11 +8,12 @@ cards = []
 chosen_emblems = []
 chosen_types = []
 values = []
-max_card_count = 52
+max_card_count = 15
 card_exposed = 0
 
+
 def get_random_deck():
-    global cards, chosen_emblems, chosen_types, max_card_count,values
+    global cards, chosen_emblems, chosen_types, max_card_count, values
     number_cards = max_card_count
     cards = []
     chosen_emblems = []
@@ -23,6 +26,10 @@ def get_random_deck():
             while new_card in cards:
                 new_card = random.randint(0, 52)
             cards.append(new_card)
+    if len(cards) == len(set(cards)):
+        pass
+    else:
+        get_random_deck()
     for i in range(0, number_cards):
         # get emblems
         if cards[i] in range(0, 12):
@@ -71,7 +78,7 @@ def display_cards(number_cards_to_display):
     emline = []
     ltline = []
     # ensure card set is generated
-    if [] ==  cards:
+    if [] == cards:
         get_random_deck()
     else:
         pass
@@ -91,18 +98,20 @@ def display_cards(number_cards_to_display):
             ltline.append(f'*  {types[chosen_types[i]]} *')
         emline.append(f'*  {emblems[chosen_emblems[i]]}  *')
 
-    print(*tpline,sep='  ')
-    print(*rtline,sep='  ')
-    print(*emline,sep='  ')
-    print(*ltline,sep='  ')
-    print(*tpline,sep='  ')
+    print(*tpline, sep='  ')
+    print(*rtline, sep='  ')
+    print(*emline, sep='  ')
+    print(*ltline, sep='  ')
+    print(*tpline, sep='  ')
     return
+
 
 def draw():
     global card_exposed
     card_exposed = card_exposed + 1
     display_cards(card_exposed)
     return
+
 
 def logic():
     user_choice = input('Would you like to draw or new deck?(y,n)')
@@ -114,13 +123,26 @@ def logic():
         logic()
     logic()
 
-dup = 0
-reps= 10000
-for i in range(0,reps):
-    get_random_deck()
-    if len(cards) != len(set(cards)):
-        dup = dup + 1
-        print(f'dupfound that the {dup} duplicate!')
-    else:
-        pass
-print(f'duplicates found : {dup} that is {(round(((dup/reps)*100),5))} % ')
+
+def check_duplicates():
+    global cards
+    dup = 0
+    reps = 10000
+    for i in range(0, reps):
+        get_random_deck()
+        if len(cards) != len(set(cards)):
+            print(f'found {len(cards)-len(set(cards))} that the {dup} duplicate!')
+            dup = dup + (len(cards)-len(set(cards)))
+        else:
+            pass
+    print(f'duplicates found : {dup} that is {(round(((dup / reps) * 100), 5))} % ')
+
+get_random_deck()
+check_duplicates()
+
+
+
+end_time = time.time()
+
+
+print(end_time-start_time)
