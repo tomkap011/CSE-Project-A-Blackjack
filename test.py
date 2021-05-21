@@ -104,7 +104,7 @@ def get_random_deck_dealer():
     # number of how many cards to genrate this set by varible at the begining of the code call max_card_count
     number_cards = 52
     # cards is the order of the deck this expresed as integer bettwen 0,51 for each card
-    cards = []
+    []
     # this varible that makes the cards easier work in code mostly for the display module
     chosen_emblems = []
     # this varible that makes the cards easier work in code mostly for the display module and getting the value of
@@ -327,12 +327,18 @@ def win_bet():
     balance = balance + bet
 
 
-def set_bet(new_bet):
+def set_bet():
     global balance, bet
-    if new_bet > balance:
-        print('You cant bet more then you have!')
-    elif new_bet < balance:
-        bet = new_bet
+    new_bet = input('How much are you betting?_')
+    if new_bet.isnumeric():
+        if int(new_bet) < int(0):
+            print('Cant be negative')
+            set_bet()
+        elif new_bet > balance:
+            print('You cant bet more then you have!')
+            set_bet()
+        else:
+            bet = new_bet
 
 
 def check_draw():
@@ -353,15 +359,7 @@ def play():
     card_exposed = 0
     bust = False
     playing = True
-    new_bet = input('How much are you betting?_')
-    if new_bet.isnumeric():
-        if int(new_bet) < int(0):
-            print('Cant be negative')
-            play()
-        else:
-            set_bet(int(new_bet))
-    else:
-        play()
+    set_bet()
     while playing:
         if check_draw():
             if cards_to_play_d > card_exposed:
