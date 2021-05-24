@@ -2,7 +2,6 @@ import random
 import time
 
 start_time = time.time()
-
 emblems = ['▒', '♣', '♦', '♥', '♠']
 types = ['▒', 'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K']
 cards = []
@@ -24,6 +23,7 @@ d_final_value = 0
 hold = False
 
 
+# generates a random deck for the player
 def get_random_deck():
     global cards, chosen_emblems, chosen_types, max_card_count, values, card_values
     # setting up variables
@@ -97,6 +97,7 @@ def get_random_deck():
     return
 
 
+# generates a random deck for the dealer
 def get_random_deck_dealer():
     global cards_dealer, chosen_emblems_dealer, chosen_types_dealer, max_card_count, values_dealer
     cards_dealer = []
@@ -104,7 +105,6 @@ def get_random_deck_dealer():
     # number of how many cards to genrate this set by varible at the begining of the code call max_card_count
     number_cards = 52
     # cards is the order of the deck this expresed as integer bettwen 0,51 for each card
-    []
     # this varible that makes the cards easier work in code mostly for the display module
     chosen_emblems = []
     # this varible that makes the cards easier work in code mostly for the display module and getting the value of
@@ -175,6 +175,7 @@ def get_random_deck_dealer():
     return
 
 
+# display th dealer's cards revealed or not
 def display_cards_dealer(number_cards_to_display, revealed):
     global cards_dealer, chosen_emblems_dealer, chosen_types_dealer
     card_num = []
@@ -212,6 +213,7 @@ def display_cards_dealer(number_cards_to_display, revealed):
     return
 
 
+# displays the cards
 def display_cards(number_cards_to_display):
     global cards, chosen_emblems, chosen_types
     tpline = []
@@ -255,7 +257,6 @@ def draw(*cte):
         card_exposed = int(str(*cte))
     # gets display cards to display said number of cards
     display_cards(card_exposed)
-    print()
     return
 
 
@@ -263,30 +264,20 @@ def draw(*cte):
 def cal_number_card_to_play():
     global cards_to_play_d, d_final_value
     value_to_play = []
-    f2 = ((int(values_dealer[0]) + int(values_dealer[1])))
-    if f2 == 21:
-        draw(2)
     for i in range(0, 52):
-        x = sum(values[0:i])
+        x = sum(values_dealer[0:i])
         if x <= 21:
             value_to_play.append(i)
         if x >= 21:
-            cards_to_play_d = (len(value_to_play))
-            break
+            cards_to_play_d = (len(value_to_play) - 1)
+            if sum(values_dealer[0:len(value_to_play) - 1]) <= 5:
+                cards_to_play_d = (len(value_to_play) - 1)
+            else:
+                break
 
-    gl = random.randint(0, 3)
-    gl = 100
-    if sum(values_dealer[0:cards_to_play_d-1]) > 18:
-        d_final_value = sum(values_dealer[0:cards_to_play_d])
-    elif gl == 1:
-        d_final_value = sum(values_dealer[0:cards_to_play_d])
-    elif gl == 2:
-        d_final_value = sum(values_dealer[0:cards_to_play_d]) - 1
-        cards_to_play_d =- 1
-    elif gl == 3:
-        d_final_value = sum(values_dealer[0:cards_to_play_d]) + 1
-        cards_to_play_d = + 1
 
+# figures out the value of deck for for each step and appends to list
+# if you have a K,5,3,2,J the value says [10,15,18,20,30]
 def get_card_vals():
     global values, chosen_types
     for i in range(0, len(chosen_types)):
@@ -302,6 +293,8 @@ def get_card_vals():
             values.append(000000)
 
 
+# figures out the value of deck for for each step and appends to list
+# if you have a K,5,3,2,J the value says [10,15,18,20,30]
 def get_card_vals_d():
     global values_dealer, chosen_types_dealer
     for i in range(0, len(chosen_types_dealer)):
@@ -317,30 +310,39 @@ def get_card_vals_d():
             values_dealer.append(000000)
 
 
+# changes the balance, when you lose
 def lose_bet():
     global balance, bet
-    balance = balance - bet
+    balance = balance - int(bet)
 
 
+# changes the balance, when you win
 def win_bet():
     global balance, bet
-    balance = balance + bet
+    balance = balance + int(bet)
 
 
+# sets the bet
 def set_bet():
     global balance, bet
     new_bet = input('How much are you betting?_')
+    if new_bet.isalpha():
+        print('Must be number!')
+        set_bet()
     if new_bet.isnumeric():
         if int(new_bet) < int(0):
             print('Cant be negative')
             set_bet()
-        elif new_bet > balance:
+        elif int(new_bet) > int(balance):
             print('You cant bet more then you have!')
             set_bet()
         else:
             bet = new_bet
+    else:
+        set_bet()
 
 
+# asks if the player they want to draw then returns a boolean value
 def check_draw():
     i = input('Would you like to draw?(y,n) ?_')
     try:
@@ -354,6 +356,7 @@ def check_draw():
         pass
 
 
+# the main code for running the game
 def play():
     global card_exposed, values, d_final_value, d_t_s, cards_to_play_d, hold
     card_exposed = 0
@@ -361,21 +364,26 @@ def play():
     playing = True
     set_bet()
     while playing:
-        if check_draw():
+        if check_draw() == True:
+            x = True
+        else:
+            x = False
+        if x:
             if cards_to_play_d > card_exposed:
                 d_t_s = card_exposed
             else:
                 d_t_s = cards_to_play_d
             display_cards_dealer(d_t_s, 0)
-        elif not check_draw():
+        elif not x:
             check_result()
             hold = True
-        if sum(values[0:card_exposed]) <= 21:
+        elif sum(values[0:card_exposed]) <= 21:
             pass
         else:
             check_result()
 
 
+# checks the result and prints a justification
 def check_result():
     global card_exposed, values, d_final_value, d_t_s, cards_to_play_d, hold
     print('\n\n\n\n\n')
@@ -415,6 +423,7 @@ def check_result():
     play()
 
 
+# resets all variables and generates new decks
 def reset():
     global cards, cards_dealer, chosen_emblems, chosen_types, chosen_types_dealer, chosen_emblems_dealer, values_dealer \
         , values, max_card_count, bet, card_exposed, card_exposed_dealer, cards_to_play_d, d_final_value
@@ -439,19 +448,19 @@ def reset():
     cal_number_card_to_play()
 
 
-
+# starts the code
 # default runs
 get_random_deck()
 get_random_deck_dealer()
 get_card_vals()
 get_card_vals_d()
 cal_number_card_to_play()
-
+# main loop
 while 1:
     # Check to do welcome
     if firstrun == True:
         print('Welcome to blackjack!')
-        print('Please note for the sake of sanity of the coder Aces will treated as being worth 10 thanks!')
+        # print('Please note for the sake of sanity of the coder Aces will treated as being worth 10 thanks!')
         print('Would like to know the rules? (y,n)')
         get_instuct = input('?_')
         if str(get_instuct[0]).lower() == 'y':
