@@ -1,6 +1,8 @@
 import random
 import time
 
+
+
 start_time = time.time()
 emblems = ['▒', '♣', '♦', '♥', '♠']
 types = ['▒', 'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K']
@@ -25,25 +27,25 @@ hold = False
 
 # generates a random deck for the player
 def get_random_deck():
-    global cards, chosen_emblems, chosen_types, max_card_count, values, card_values
+    global cards, chosen_emblems, chosen_types, max_card_count, values
     # setting up variables
-    # number of how many cards to genrate this set by varible at the begining of the code call max_card_count
+    # number of how many cards to generate this set by variable at the beginning of the code call max_card_count
     number_cards = max_card_count
-    # cards is the order of the deck this expresed as integer bettwen 0,51 for each card
+    # cards is the order of the deck this expressed as integer between 0,51 for each card
     cards = []
-    # this varible that makes the cards easier work in code mostly for the display module
+    # this variable that makes the cards easier work in code mostly for the display module
     chosen_emblems = []
-    # this varible that makes the cards easier work in code mostly for the display module and getting the value of
+    # this variable that makes the cards easier work in code mostly for the display module and getting the value of
     # each cards
     chosen_types = []
-    # the for is used to have set number repitions
+    # the for is used to have set number repetitions
     for i in range(0, number_cards):
         # if its the first card we simply generate no checks needed
         if i == 1:
             cards.append(random.randint(0, 52))
         else:
             # here if the i is non 1 we go and make a new card check if already on the list if its we go again until
-            # the code finds a apporite that then appended
+            # the code finds a opposite that then appended
             new_card = random.randint(0, 52)
             while new_card in cards:
                 new_card = random.randint(0, 52)
@@ -54,9 +56,9 @@ def get_random_deck():
         pass
     else:
         get_random_deck()
-    # the for command is used to run the code the approate number of times
+    # the for command is used to run the code the appropriate number of times
     for i in range(0, number_cards):
-        # get emblems and append to chossen emblems list
+        # get emblems and append to chosen emblems list
         if cards[i] in range(0, 12):
             chosen_emblems.append(1)
         elif cards[i] in range(14, 26):
@@ -102,22 +104,20 @@ def get_random_deck_dealer():
     global cards_dealer, chosen_emblems_dealer, chosen_types_dealer, max_card_count, values_dealer
     cards_dealer = []
     # setting up variables
-    # number of how many cards to genrate this set by varible at the begining of the code call max_card_count
+    # number of how many cards to generate this set by variable at the begining of the code call max_card_count
     number_cards = 52
-    # cards is the order of the deck this expresed as integer bettwen 0,51 for each card
-    # this varible that makes the cards easier work in code mostly for the display module
-    chosen_emblems = []
-    # this varible that makes the cards easier work in code mostly for the display module and getting the value of
+    # cards is the order of the deck this expressed as integer between 0,51 for each card
+    # this variable that makes the cards easier work in code mostly for the display module
+    # this variable that makes the cards easier work in code mostly for the display module and getting the value of
     # each cards
-    chosen_types = []
-    # the for is used to have set number repitions
+    # the for is used to have set number repetitions
     for i in range(0, 52):
         # if its the first card we simply generate no checks needed
         if i == 1:
             cards_dealer.append(random.randint(0, 52))
         else:
             # here if the i is non 1 we go and make a new card check if already on the list if its we go again until
-            # the code finds a apporite that then appended
+            # the code finds a appriate that then appended
             new_card = random.randint(0, 52)
             while new_card in cards_dealer:
                 new_card = random.randint(0, 52)
@@ -132,9 +132,9 @@ def get_random_deck_dealer():
             print('here')
             get_random_deck()
 
-    # the for command is used to run the code the approate number of times
+    # the for command is used to run the code the appropriate number of times
     for i in range(0, number_cards):
-        # get emblems and append to chossen emblems list
+        # get emblems and append to chosen emblems list
         if cards_dealer[i] in range(0, 13):
             chosen_emblems_dealer.append(1)
         elif cards_dealer[i] in range(14, 26):
@@ -262,7 +262,9 @@ def draw(*cte):
 
 # the front end code for the game
 def cal_number_card_to_play():
+    # setting up necessary global values
     global cards_to_play_d, d_final_value
+    # ensuring the list is cleared
     value_to_play = []
     for i in range(0, 52):
         x = sum(values_dealer[0:i])
@@ -288,7 +290,7 @@ def get_card_vals():
         elif chosen_types[i] in [2, 3, 4, 5, 6, 7, 8, 9, 10]:
             values.append(chosen_types[i])
         elif chosen_types[i] == 1:
-            values.append(10)
+            values.append(11)
         else:
             values.append(000000)
 
@@ -305,7 +307,7 @@ def get_card_vals_d():
         elif chosen_types_dealer[i] in [2, 3, 4, 5, 6, 7, 8, 9, 10]:
             values_dealer.append(chosen_types_dealer[i])
         elif chosen_types_dealer[i] == 1:
-            values_dealer.append(10)
+            values_dealer.append(11)
         else:
             values_dealer.append(000000)
 
@@ -364,7 +366,7 @@ def play():
     playing = True
     set_bet()
     while playing:
-        if check_draw() == True:
+        if check_draw():
             x = True
         else:
             x = False
@@ -385,22 +387,28 @@ def play():
 
 # checks the result and prints a justification
 def check_result():
+    # global values setup
     global card_exposed, values, d_final_value, d_t_s, cards_to_play_d, hold
+    # prints the cards both for the player and the dealer
     print('\n\n\n\n\n')
     display_cards(card_exposed)
     print(sum(values[0:card_exposed]))
     display_cards_dealer(cards_to_play_d, 1)
     print(sum(values_dealer[0:cards_to_play_d]))
+
     if d_final_value > 21:
         print('You win!')
         win_bet()
     elif sum(values[0:card_exposed]) > 21:
+        print('You lose!')
         lose_bet()
     elif hold:
         if sum(values[0:card_exposed]) > sum(values_dealer[0:card_exposed]):
             print('You win!')
             win_bet()
     elif sum(values[0:card_exposed]) == d_final_value:
+        print(sum(values[0:card_exposed]))
+        print(d_final_value)
         print('Tie!')
         reset()
     elif sum(values[0:card_exposed]) < d_final_value:
@@ -448,19 +456,12 @@ def reset():
     cal_number_card_to_play()
 
 
-# starts the code
-# default runs
-get_random_deck()
-get_random_deck_dealer()
-get_card_vals()
-get_card_vals_d()
-cal_number_card_to_play()
 # main loop
 while 1:
     # Check to do welcome
     if firstrun == True:
         print('Welcome to blackjack!')
-        # print('Please note for the sake of sanity of the coder Aces will treated as being worth 10 thanks!')
+        print('Please note for the sake of sanity of the coder Aces will treated as being worth 11 thanks!')
         print('Would like to know the rules? (y,n)')
         get_instuct = input('?_')
         if str(get_instuct[0]).lower() == 'y':
