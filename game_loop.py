@@ -1,6 +1,5 @@
 import u_input as u_i
 from object_defintions import *
-<<<<<<< HEAD
 def run():
     player = Player(ai_on=False)
     dealer = Player(ai_on=True)
@@ -56,7 +55,6 @@ def run():
             break
     quit()
     print('Achievement get "How did we get her" \n no seriously there quit command above me!')
-=======
 
 player = Player(ai_on=False)
 dealer = Player(ai_on=True)
@@ -110,4 +108,4 @@ while 1:
     else:
         print(f' Final Balance = {player.balance}')
         break
->>>>>>> origin/master
+
