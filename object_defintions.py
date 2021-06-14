@@ -1,9 +1,11 @@
+# importing the  random library
 import random
 
-# object of Card
+# importing of the config file
 import config
 
 
+# defintion of a Card
 class Card:
     # defining the cards and its characteristics
     def __init__(self, suit, number):
@@ -46,15 +48,19 @@ class Deck:
         number_line_t = []
         number_line_b = []
 
+        # ensure string is not to long
         if self.counter > 52:
+            print(type(self.counter))
             self.counter = 52
-
+        # if max cards blank it is set high
         if self.max_cards == ():
             self.max_cards = 99999999
 
         if self.counter > self.max_cards:
             self.counter = self.max_cards
 
+        # displaying cards by using lists
+        # display cards with info
         if display_info:
             for i in range(0, self.counter):
                 line_top_bottom.append(f'*******')
@@ -65,6 +71,7 @@ class Deck:
                 else:
                     number_line_t.append(f'*{self.numbers[self.cards[i].number]}    *')
                     number_line_b.append(f'*    {self.numbers[self.cards[i].number]}*')
+        # display cards without info
         else:
             for i in range(0, self.counter):
                 line_top_bottom.append(f'*******')
@@ -72,6 +79,7 @@ class Deck:
                 number_line_b.append(f'*|||||*')
                 number_line_t.append('*|||||*')
 
+        # print the cards
         print(header)
         print(*line_top_bottom, sep='  ')
         print(*number_line_t, sep='  ')
@@ -84,59 +92,69 @@ class Deck:
         self.counter += 1
         self.deck_print(header=header, display_info=display_info)
 
-    def cal_score(self):
+    # calculte value of the drawn cards
+    def calulate_drawn_deck_values(self):
         self.score = []
         for i in range(0, self.counter):
             self.score.append(self.cards[i].value)
             # print(self.cards[i].print_info())
         self.score = sum(self.score)
 
+    # calculates the value of the deck with compensated aces
     def result(self, display_score=bool):
-        self.cal_score()
+        self.calulate_drawn_deck_values()
         if self.score > 21:
             for i in range(0, self.counter):
                 if self.cards[i].is_ace:
                     self.cards[i].value = 1
-                self.cal_score()
+                self.calulate_drawn_deck_values()
                 if self.score <= 21:
                     break
         print(f'Score = {self.score}')
 
 
+# definition of player
 class Player:
+    # initializing the player
     def __init__(self, ai_on=bool):
+        # create varible and creating deck
         self.ai_on = ai_on
         self.deck = Deck()
         self.current_bet = 0
         self.balance = config.default_balance
         self.max_cards = int()
+        # calculating the amound of cards that need to be drawn
         if ai_on:
-            self.deck.cal_score()
+            self.deck.calulate_drawn_deck_values()
             while 1:
-                self.deck.cal_score()
+                self.deck.calulate_drawn_deck_values()
                 if self.deck.score <= 17:
-                    self.deck.cal_score()
+                    self.deck.calulate_drawn_deck_values()
                     self.deck.counter += 1
                 else:
-                    self.deck.cal_score()
+                    self.deck.calulate_drawn_deck_values()
                     break
             self.deck.max_cards = self.deck.counter
+        self.deck.counter = 0
+
+    # resetting the deck and recalculating the number of cards to draw
     def reset_deck(self):
         self.current_bet = 0
         self.deck = Deck()
         if self.ai_on:
-            self.deck.cal_score()
+            self.deck.calulate_drawn_deck_values()
             while 1:
-                self.deck.cal_score()
+                self.deck.calulate_drawn_deck_values()
                 if self.deck.score <= 17:
-                    self.deck.cal_score()
+                    self.deck.calulate_drawn_deck_values()
                     self.deck.counter += 1
                 else:
-                    self.deck.cal_score()
+                    self.deck.calulate_drawn_deck_values()
                     break
             self.deck.max_cards = self.deck.counter
+        self.deck.counter = 0
 
-
+    # credits
 def credits():
     print("░█████╗░██████╗░███████╗░█████╗░████████╗███████╗██████╗░  ██████╗░██╗░░░██╗")
     print("██╔══██╗██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗  ██╔══██╗╚██╗░██╔╝")
@@ -157,4 +175,4 @@ def credits():
           "██████╔╝██║")
     print("░░░╚═╝░░░╚═╝░░╚═╝░╚════╝░╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═════╝░  ╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░░░░░╚════╝░░╚════╝░"
           "╚═════╝░╚═╝")
-    print('Thomas Kapocsi')
+    print(' Created by Thomas Kapocsi')
