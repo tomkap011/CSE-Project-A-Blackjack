@@ -70,5 +70,5 @@ def run():
         else:
             print(f' Final Balance = {player.balance}')
             credits()
-            quit()
+            break
             print('Achievement get "How did we get her" \n no seriously there quit command above me!')
